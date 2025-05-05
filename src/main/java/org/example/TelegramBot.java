@@ -1,8 +1,10 @@
 package org.example;
 
+import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.service.TelegramService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
 import org.telegram.telegrambots.longpolling.interfaces.LongPollingUpdateConsumer;
@@ -14,24 +16,24 @@ import org.telegram.telegrambots.meta.generics.TelegramClient;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class TelegramBot implements SpringLongPollingBot, LongPollingSingleThreadUpdateConsumer {
 
-    private final CredentialsProperties credentialsProperties;
-    private final TelegramClient telegramClient;
     private final TelegramService telegramService;
 
-    @Autowired
-    public TelegramBot(CredentialsProperties credentialsProperties,
-                       TelegramService telegramService
-    ) {
-        this.credentialsProperties = credentialsProperties;
+    @Value( "${telegram.telegramBotToken}" )
+    private String telegramBotToken;
+
+    private TelegramClient telegramClient;
+
+    @PostConstruct
+    public void init() {
         telegramClient = new OkHttpTelegramClient(getBotToken());
-        this.telegramService = telegramService;
     }
 
     @Override
     public String getBotToken() {
-        return credentialsProperties.getTelegramBotToken();
+        return telegramBotToken;
     }
 
     @Override

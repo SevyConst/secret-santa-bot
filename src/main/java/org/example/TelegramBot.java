@@ -1,7 +1,8 @@
 package org.example;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
+import org.example.service.TelegramService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
 import org.telegram.telegrambots.longpolling.interfaces.LongPollingUpdateConsumer;
@@ -11,17 +12,21 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.message.Message;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 
+@Slf4j
 @Component
 public class TelegramBot implements SpringLongPollingBot, LongPollingSingleThreadUpdateConsumer {
 
-    private static final Logger logger = LogManager.getLogger(TelegramBot.class.getName());
-
     private final CredentialsProperties credentialsProperties;
     private final TelegramClient telegramClient;
+    private final TelegramService telegramService;
 
-    public TelegramBot(CredentialsProperties credentialsProperties) {
+    @Autowired
+    public TelegramBot(CredentialsProperties credentialsProperties,
+                       TelegramService telegramService
+    ) {
         this.credentialsProperties = credentialsProperties;
         telegramClient = new OkHttpTelegramClient(getBotToken());
+        this.telegramService = telegramService;
     }
 
     @Override
@@ -41,12 +46,13 @@ public class TelegramBot implements SpringLongPollingBot, LongPollingSingleThrea
                 update.getMessage().hasText()
         ) {
             Message inputMessage = update.getMessage();
-            logger.info("UserId: {}, userName: {}, chatId: {}, message: {}",
+            LOGGER.info("UserId: {}, userName: {}, chatId: {}, message: {}",
                     inputMessage.getFrom().getId(),
                     inputMessage.getFrom().getUserName(),
                     inputMessage.getChatId(),
                     inputMessage.getText()
             );
+            telegramService.handleInputMessage(inputMessage);
         }
     }
 

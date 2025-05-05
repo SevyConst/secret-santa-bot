@@ -43,3 +43,4 @@ bin/
 
 ###
 /src/main/resources/credentials.properties
+/src/main/resources/application.properties

@@ -24,5 +24,5 @@ when not matched then
 insert (id, user_name, first_name, last_name, number_actions, created_at, updated_at)
 values (v.id, v.user_name, v.first_name, v.last_name, 1, v.upsert_at, v.upsert_at);
 """)
-    int updateAndIncrement(long id, String userName, String firstName, String lastName, String upsertAt);
+    int updateAndIncrement(Long id, String userName, String firstName, String lastName, String upsertAt);
 }

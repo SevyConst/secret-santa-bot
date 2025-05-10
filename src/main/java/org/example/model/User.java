@@ -14,17 +14,12 @@ import java.time.LocalDate;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
     private Long id;
 
     private String userName;
     private String firstName;
     private String lastName;
     private Integer numberActions;
-
-    @CreatedDate
     private LocalDate createdAt;
-
-    @LastModifiedDate
     private LocalDate updatedAt;
 }

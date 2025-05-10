@@ -1,0 +1,5 @@
+package org.example;
+
+public enum StateEnum {
+    START, ERROR, MAIN_MENU, CREATE_NEW_GROUP, JOIN_GROUP_BY_ID, ENTER_GROUP_NAME, SELECT_EXISTING_GROUP
+}
